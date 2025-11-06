@@ -1,12 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import ThemeToggle from './ThemeToggle';
+import { useTheme } from './ThemeProvider';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('services');
   const [isScrolled, setIsScrolled] = useState(false);
+  const pathname = usePathname();
+  const { themeClasses } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,18 +21,27 @@ export default function Header() {
   }, []);
 
   const navItems = [
-    { id: 'services', name: 'Services', href: '#services', icon: '⚡' },
-    { id: 'solutions', name: 'Solutions', href: '#how-it-works', icon: '🎯' },
-    { id: 'pricing', name: 'Pricing', href: '#pricing', icon: '💎' },
-    { id: 'portfolio', name: 'Portfolio', href: '#portfolio', icon: '🎬' },
-    { id: 'resources', name: 'Resources', href: '#faq', icon: '📚' },
+    { id: 'home', name: 'Home', href: '/' },
+    { id: 'services', name: 'Services', href: '/services' },
+    { id: 'portfolio', name: 'Portfolio', href: '/portfolio' },
+    { id: 'pricing', name: 'Pricing', href: '/pricing' },
+    { id: 'about', name: 'About Us', href: '/about' },
+    { id: 'faq', name: 'FAQ', href: '/faq' },
   ];
+
+  // Determine active tab based on current pathname
+  const isActiveTab = (href: string) => {
+    if (href === '/') {
+      return pathname === '/';
+    }
+    return pathname.startsWith(href);
+  };
 
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'glass-effect-dark shadow-lg shadow-purple-900/20' 
+          ? `${themeClasses.headerScrolled} ${themeClasses.shadow}` 
           : 'bg-transparent'
       }`}
     >
@@ -55,121 +68,119 @@ export default function Header() {
           {/* Desktop Navigation - Creative Tab Style */}
           <div className={`hidden lg:flex items-center transition-all duration-300 ${
             isScrolled 
-              ? 'glass-effect-dark border-purple-900/20'
-              : 'bg-[#151825]/50 backdrop-blur-sm border-white/10'
+              ? `${themeClasses.glassEffectDark} ${themeClasses.borderLight}`
+              : `${themeClasses.glassEffect} ${themeClasses.border}`
           } rounded-full px-2 py-2 border`}>
-            {navItems.map((item) => (
-              <Link
-                key={item.id}
-                href={item.href}
-                onClick={() => setActiveTab(item.id)}
-                className={`relative px-5 py-2.5 rounded-full transition-all duration-300 ${
-                  activeTab === item.id
-                    ? 'text-white'
-                    : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                {/* Active Tab Background */}
-                {activeTab === item.id && (
-                  <div className="absolute inset-0 rounded-full shadow-lg animate-fade-in theme-gradient shadow-purple-900/40"></div>
-                )}
-                
-                {/* Content */}
-                <div className="relative flex items-center space-x-2">
-                  <span className={`text-lg transition-transform duration-300 ${
-                    activeTab === item.id ? 'scale-110' : ''
-                  }`}>
-                    {item.icon}
-                  </span>
-                  <span className="text-sm font-semibold whitespace-nowrap">
+            {navItems.map((item) => {
+              const isActive = isActiveTab(item.href);
+              return (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  className={`relative px-5 py-2.5 rounded-full transition-all duration-500 ease-out ${
+                    isActive
+                      ? themeClasses.textWhite
+                      : `${themeClasses.headerTextSecondary} hover:${themeClasses.textPrimary}`
+                  }`}
+                >
+                  {/* Active Tab Background */}
+                  {isActive && (
+                    <div className={`absolute inset-0 rounded-full ${themeClasses.gradient} ${themeClasses.shadowPurple} animate-slide-in`}></div>
+                  )}
+                  
+                  {/* Content */}
+                  <span className="text-sm font-semibold whitespace-nowrap relative z-10">
                     {item.name}
                   </span>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
 
-          {/* CTA Button - Watch Demo */}
-          <div className="hidden lg:flex items-center">
+          {/* CTA Button & Theme Toggle */}
+          <div className="hidden lg:flex items-center gap-4">
+            <ThemeToggle />
             <Link
-              href="#demo"
+              href="/contact"
               className={`group relative px-6 py-3 rounded-full font-semibold text-sm overflow-hidden transition-all duration-300 hover:scale-105 ${
                 isScrolled
-                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/40 hover:shadow-xl hover:shadow-purple-500/50'
-                  : 'bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20'
+                  ? `${themeClasses.buttonPrimary} ${themeClasses.shadowPurple}`
+                  : themeClasses.buttonSecondary
               }`}
             >
-              <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
-                isScrolled
-                  ? 'bg-gradient-to-r from-blue-600 to-purple-600'
-                  : 'bg-white/10'
-              }`}></div>
               <div className="relative flex items-center space-x-2">
                 <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
                 </svg>
-                <span>Watch Demo</span>
+                <span>Start Your Project</span>
               </div>
             </Link>
           </div>
 
-          {/* Mobile Menu Button - Creative Design */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`lg:hidden relative w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 cursor-pointer ${
-              isScrolled
-                ? 'bg-gradient-to-br from-purple-100 to-blue-100 hover:from-purple-200 hover:to-blue-200'
-                : 'bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20'
-            }`}
-          >
+          {/* Mobile Menu - Theme Toggle & Hamburger */}
+          <div className="lg:hidden flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className={`relative w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 cursor-pointer ${
+                isScrolled
+                  ? `${themeClasses.cardBg} ${themeClasses.cardHoverBg}`
+                  : `${themeClasses.glassEffect} ${themeClasses.border} border`
+              }`}
+            >
             <div className="relative w-5 h-4 flex flex-col justify-between">
               <span
                 className={`w-full h-0.5 rounded-full transition-all duration-300 ${
-                  isScrolled ? 'bg-purple-600' : 'bg-white'
+                  isScrolled ? 'bg-purple-600' : themeClasses.textPrimary
                 } ${isMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`}
               ></span>
               <span
                 className={`w-full h-0.5 rounded-full transition-all duration-300 ${
-                  isScrolled ? 'bg-purple-600' : 'bg-white'
+                  isScrolled ? 'bg-purple-600' : themeClasses.textPrimary
                 } ${isMenuOpen ? 'opacity-0' : ''}`}
               ></span>
               <span
                 className={`w-full h-0.5 rounded-full transition-all duration-300 ${
-                  isScrolled ? 'bg-purple-600' : 'bg-white'
+                  isScrolled ? 'bg-purple-600' : themeClasses.textPrimary
                 } ${isMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}
               ></span>
             </div>
-          </button>
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu - Creative Design */}
         {isMenuOpen && (
-          <div className="lg:hidden mt-4 pb-4 space-y-2 animate-fade-in rounded-2xl glass-effect-dark shadow-lg">
-            {navItems.map((item) => (
-              <Link
-                key={item.id}
-                href={item.href}
-                className="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 hover:bg-[#1a1d2d] text-gray-400 hover:text-white"
-                onClick={() => {
-                  setActiveTab(item.id);
-                  setIsMenuOpen(false);
-                }}
-              >
-                <span className="text-2xl">{item.icon}</span>
-                <span className={`text-sm font-semibold ${
-                  isScrolled ? 'text-gray-700' : 'text-white'
-                }`}>{item.name}</span>
-              </Link>
-            ))}
+          <div className={`lg:hidden mt-4 pb-4 space-y-2 animate-fade-in rounded-2xl ${themeClasses.glassEffectDark} ${themeClasses.shadow}`}>
+            {navItems.map((item) => {
+              const isActive = isActiveTab(item.href);
+              return (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  className={`relative px-4 py-3 rounded-xl transition-all duration-500 ease-out overflow-hidden ${
+                    isActive
+                      ? themeClasses.textWhite
+                      : `${themeClasses.headerTextSecondary} hover:${themeClasses.textPrimary}`
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {isActive && (
+                    <div className={`absolute inset-0 ${themeClasses.gradient} rounded-xl animate-slide-in`}></div>
+                  )}
+                  <span className="text-sm font-semibold relative z-10">{item.name}</span>
+                </Link>
+              );
+            })}
             <Link
-              href="#demo"
-              className="flex items-center justify-center space-x-2 px-4 py-3 rounded-xl theme-gradient text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+              href="/contact"
+              className={`flex items-center justify-center space-x-2 px-4 py-3 rounded-xl ${themeClasses.gradient} ${themeClasses.textWhite} ${themeClasses.shadow} hover:shadow-xl transition-all duration-300 hover:scale-[1.02]`}
               onClick={() => setIsMenuOpen(false)}
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
               </svg>
-              <span>Watch Demo</span>
+              <span>Start Your Project</span>
             </Link>
           </div>
         )}

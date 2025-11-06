@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useTheme } from './ThemeProvider';
 
 export default function OurClients() {
+  const { themeClasses } = useTheme();
   const [activeVideo, setActiveVideo] = useState(0);
 
   const clients = [
@@ -63,31 +65,24 @@ export default function OurClients() {
   ];
 
   return (
-    <section id="our-clients" className="theme-section relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 bg-[#151825] pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#0f1119] to-transparent"></div>
-        <div className="absolute bottom-0 left-0 w-full h-64 bg-gradient-to-t from-[#0f1119] to-transparent"></div>
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-purple-600/10 rounded-full filter blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-600/10 rounded-full filter blur-3xl"></div>
-        </div>
-      </div>
+    <section id="our-clients" className={`py-20 relative overflow-hidden ${themeClasses.bgPrimary}`}>
+      {/* Background Gradient */}
+      <div className={`absolute inset-0 ${themeClasses.bgGradient} pointer-events-none`}></div>
 
       <div className="container mx-auto px-6 relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <h2 className={`text-4xl md:text-5xl font-bold ${themeClasses.textPrimary} mb-4`}>
             Our Clients & Their Success Stories
           </h2>
-          <p className="text-xl text-gray-400">
+          <p className={`text-xl ${themeClasses.textSecondary}`}>
             Trusted by leading brands across industries to create compelling video content
           </p>
         </div>
 
         {/* Featured Video */}
         <div className="max-w-6xl mx-auto mb-12">
-          <div className="theme-card bg-[#151825]/50 backdrop-blur-sm rounded-3xl overflow-hidden">
+          <div className={`${themeClasses.cardBg} ${themeClasses.cardBorder} border backdrop-blur-sm rounded-3xl overflow-hidden`}>
             <div className="grid lg:grid-cols-2 gap-0">
               {/* Video Thumbnail */}
               <div className="relative aspect-video lg:aspect-auto group cursor-pointer">
@@ -99,13 +94,13 @@ export default function OurClients() {
                 {/* Play Button Overlay */}
                 <div className="absolute inset-0 bg-black/60 group-hover:bg-black/70 transition-all duration-300 flex items-center justify-center">
                   <div className="theme-gradient w-20 h-20 rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
-                    <svg className="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className={`w-10 h-10 ${themeClasses.textWhite} ml-1`} fill="currentColor" viewBox="0 0 20 20">
                       <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
                     </svg>
                   </div>
                 </div>
                 {/* Views Badge */}
-                <div className="absolute top-4 right-4 bg-[#151825]/80 backdrop-blur-sm text-white px-4 py-2 rounded-full flex items-center border border-white/10">
+                <div className={`absolute top-4 right-4 ${themeClasses.cardBg} backdrop-blur-sm ${themeClasses.textPrimary} px-4 py-2 rounded-full flex items-center ${themeClasses.cardBorder} border`}>
                   <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
                     <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
@@ -117,11 +112,11 @@ export default function OurClients() {
               {/* Video Info */}
               <div className="p-8 lg:p-12 flex flex-col justify-center">
                 <div className="flex items-center mb-4">
-                  <div className="w-16 h-16 theme-gradient rounded-xl flex items-center justify-center text-white font-bold text-xl mr-4">
+                  <div className={`w-16 h-16 ${themeClasses.gradient} rounded-xl flex items-center justify-center ${themeClasses.textWhite} font-bold text-xl mr-4`}>
                     {clients[activeVideo].logo}
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold text-white">
+                    <h3 className={`text-2xl font-bold ${themeClasses.textPrimary}`}>
                       {clients[activeVideo].name}
                     </h3>
                     <p className="theme-gradient-text font-medium">
@@ -129,13 +124,13 @@ export default function OurClients() {
                     </p>
                   </div>
                 </div>
-                <h4 className="text-3xl font-bold text-white mb-4">
+                <h4 className={`text-3xl font-bold ${themeClasses.textPrimary} mb-4`}>
                   {clients[activeVideo].videoTitle}
                 </h4>
-                <p className="text-gray-400 text-lg leading-relaxed mb-6">
+                <p className={`${themeClasses.textSecondary} text-lg leading-relaxed mb-6`}>
                   {clients[activeVideo].description}
                 </p>
-                <div className="flex items-center text-sm text-gray-400">
+                <div className={`flex items-center text-sm ${themeClasses.textSecondary}`}>
                   <svg className="w-5 h-5 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
@@ -154,19 +149,19 @@ export default function OurClients() {
               onClick={() => setActiveVideo(index)}
               className={`p-6 rounded-2xl transition-all duration-300 cursor-pointer ${
                 activeVideo === index
-                  ? 'theme-gradient shadow-xl scale-105'
-                  : 'theme-card bg-[#151825]/50 backdrop-blur-sm hover:bg-[#1a1d2d]'
+                  ? `${themeClasses.gradient} ${themeClasses.shadow} scale-105`
+                  : `${themeClasses.cardBg} ${themeClasses.cardHoverBg} ${themeClasses.cardBorder} border backdrop-blur-sm`
               }`}
             >
               <div className={`w-12 h-12 mx-auto mb-3 rounded-lg flex items-center justify-center font-bold text-lg ${
                 activeVideo === index
                   ? 'bg-white/20 text-white'
-                  : 'theme-gradient text-white'
+                  : `${themeClasses.gradient} ${themeClasses.textWhite}`
               }`}>
                 {client.logo}
               </div>
               <p className={`text-sm font-semibold text-center ${
-                activeVideo === index ? 'text-white' : 'text-gray-400'
+                activeVideo === index ? 'text-white' : themeClasses.textSecondary
               }`}>
                 {client.name}
               </p>

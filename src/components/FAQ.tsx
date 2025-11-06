@@ -1,8 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { useTheme } from './ThemeProvider';
+
 
 export default function FAQ() {
+  const { themeClasses } = useTheme();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const faqs = [
@@ -49,24 +52,17 @@ export default function FAQ() {
   ];
 
   return (
-    <section id="faq" className="theme-section relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 bg-[#151825] pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#0f1119] to-transparent"></div>
-        <div className="absolute bottom-0 left-0 w-full h-64 bg-gradient-to-t from-[#0f1119] to-transparent"></div>
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-purple-600/10 rounded-full filter blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-600/10 rounded-full filter blur-3xl"></div>
-        </div>
-      </div>
+    <section id="faq" className={`py-20 relative overflow-hidden ${themeClasses.bgPrimary}`}>
+      {/* Background Gradient */}
+      <div className={`absolute inset-0 ${themeClasses.bgGradient} pointer-events-none`}></div>
 
       <div className="container mx-auto px-6 relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <h2 className={`text-4xl md:text-5xl font-bold ${themeClasses.textPrimary} mb-4`}>
             Frequently Asked Questions
           </h2>
-          <p className="text-xl text-gray-400">
+          <p className={`text-xl ${themeClasses.textSecondary}`}>
             Everything you need to know about our video editing services
           </p>
         </div>
@@ -77,19 +73,17 @@ export default function FAQ() {
             {faqs.map((faq, index) => (
               <div
                 key={index}
-                className={`theme-card bg-[#151825]/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-purple-900/20 transition-all duration-300 ${
-                  openIndex === index ? 'bg-[#1a1d2d]' : 'hover:bg-[#1a1d2d]'
-                }`}
+                className={`${themeClasses.cardBg} ${themeClasses.cardHoverBg} backdrop-blur-sm rounded-2xl overflow-hidden ${themeClasses.cardBorder} border transition-all duration-300`}
               >
                 <button
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}
                   className="w-full px-8 py-6 flex items-center justify-between text-left cursor-pointer"
                 >
-                  <span className="text-lg font-semibold text-white pr-8">
+                  <span className={`text-lg font-semibold ${themeClasses.textPrimary} pr-8`}>
                     {faq.question}
                   </span>
                   <div
-                    className={`flex-shrink-0 w-8 h-8 rounded-full theme-gradient text-white flex items-center justify-center transition-all duration-300 ${
+                    className={`flex-shrink-0 w-8 h-8 rounded-full ${themeClasses.gradient} ${themeClasses.textWhite} flex items-center justify-center transition-all duration-300 ${
                       openIndex === index ? 'rotate-180 scale-110' : ''
                     }`}
                   >
@@ -114,7 +108,7 @@ export default function FAQ() {
                   }`}
                 >
                   <div className="px-8 pb-6">
-                    <p className="text-gray-400 leading-relaxed">
+                    <p className={`${themeClasses.textSecondary} leading-relaxed`}>
                       {faq.answer}
                     </p>
                   </div>
@@ -124,31 +118,6 @@ export default function FAQ() {
           </div>
         </div>
 
-        {/* Still Have Questions CTA */}
-        <div className="mt-16 text-center">
-          <div className="theme-card bg-[#151825]/50 backdrop-blur-sm rounded-3xl p-12 max-w-4xl mx-auto">
-            <div className="relative">
-              <div className="absolute inset-0 theme-gradient opacity-10 rounded-2xl"></div>
-              <div className="relative">
-                <h3 className="text-3xl font-bold text-white mb-4">
-                  Still Have Questions?
-                </h3>
-                <p className="text-gray-300 text-lg mb-8">
-                  Our team is here to help! Schedule a free consultation to discuss your project.
-                </p>
-                <a
-                  href="#book-call"
-                  className="theme-button inline-flex items-center group"
-                >
-                  Book a Free Call
-                  <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );

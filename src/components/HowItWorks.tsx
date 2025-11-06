@@ -1,29 +1,38 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+import { useTheme } from './ThemeProvider';
+
 export default function HowItWorks() {
+  const { themeClasses } = useTheme();
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement[]>([]);
+  
   const steps = [
     {
       number: '01',
-      title: 'Share Your Vision',
-      description: 'Tell us about your project, goals, and creative vision. Upload your raw footage or discuss your ideas with our team.',
+      title: 'Upload & Brief Us',
+      description: 'Simply upload your raw footage (via Dropbox, Drive, etc.) and tell us the goal: The style, platform (TikTok/Reel), and any trending sound you want to use.',
       icon: (
         <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
         </svg>
       ),
     },
     {
       number: '02',
-      title: 'We Plan & Strategize',
-      description: 'Our team reviews your content, creates a detailed editing plan, and provides you with a timeline and quote.',
+      title: 'Confirm Quote & Timeline',
+      description: "We quickly review your footage and brief. We'll send you a fast, fixed-price quote and confirm the exact delivery date so we can get started immediately.",
       icon: (
         <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
         </svg>
       ),
     },
     {
       number: '03',
       title: 'Expert Editing',
-      description: 'Our professional editors bring your vision to life with cutting-edge techniques, effects, and attention to detail.',
+      description: 'Our editors get to work, using trending techniques, engaging captions, and tight syncing to create an algorithm-crushing video.',
       icon: (
         <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
@@ -33,8 +42,8 @@ export default function HowItWorks() {
     },
     {
       number: '04',
-      title: 'Review & Revise',
-      description: 'We share the first draft for your feedback. You get up to 3 rounds of revisions to ensure perfection.',
+      title: 'Fast Feedback Loop',
+      description: "We send the first draft your way. You get up to 2 rounds of quick revisions to ensure it's exactly what you need to hit publish.",
       icon: (
         <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -43,66 +52,103 @@ export default function HowItWorks() {
     },
     {
       number: '05',
-      title: 'Final Delivery',
-      description: 'Receive your polished video in any format you need, optimized for your platform of choice.',
+      title: 'Publish & Grow',
+      description: "Receive your high-resolution video optimized and ready-to-upload for Instagram, TikTok, or YouTube. All that's left is to hit Publish!",
       icon: (
         <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
       ),
     },
   ];
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!sectionRef.current) return;
+
+      const sectionTop = sectionRef.current.offsetTop;
+      const scrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+
+      cardsRef.current.forEach((card, index) => {
+        if (!card) return;
+
+        const cardStart = sectionTop + (index * windowHeight * 0.4);
+        
+        // Calculate which card should be active
+        const activeCard = Math.floor((scrollY - sectionTop + 200) / (windowHeight * 0.4));
+        
+        // Set z-index so newer cards are always on top
+        card.style.zIndex = (index + 1).toString();
+        
+        // Keep all cards stable - no movement
+        card.style.transform = 'translateY(0px)';
+        card.style.opacity = '1';
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [steps.length]);
+
   return (
-    <section id="how-it-works" className="theme-section relative overflow-hidden">
+    <section 
+      ref={sectionRef}
+      id="how-it-works" 
+      className={`py-20 relative ${themeClasses.bgPrimary}`}
+      style={{ minHeight: `${steps.length * 60}vh` }}
+    >
       {/* Background Elements */}
-      <div className="absolute inset-0 bg-[#151825] pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#0f1119] to-transparent"></div>
-        <div className="absolute bottom-0 left-0 w-full h-64 bg-gradient-to-t from-[#0f1119] to-transparent"></div>
+      <div className={`absolute inset-0 ${themeClasses.bgSecondary} pointer-events-none`}>
+        <div className={`absolute top-0 left-0 w-full h-64 bg-gradient-to-b ${themeClasses.bgPrimary} to-transparent`}></div>
+        <div className={`absolute bottom-0 left-0 w-full h-64 bg-gradient-to-t ${themeClasses.bgPrimary} to-transparent`}></div>
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+        {/* Section Header - Fixed at top */}
+        <div className="text-center max-w-3xl mx-auto mb-16 pt-8">
+          <h2 className={`text-4xl md:text-5xl font-bold ${themeClasses.textPrimary} mb-4`}>
             How It Works
           </h2>
-          <p className="text-xl text-gray-400">
-            Our simple 5-step process to transform your raw footage into stunning videos
+          <p className={`text-xl ${themeClasses.textSecondary}`}>
+            From upload to viral—our simple 5-step process gets you results fast
           </p>
         </div>
 
-        {/* Steps */}
-        <div className="max-w-5xl mx-auto">
+        {/* Stacked Cards */}
+        <div className="max-w-4xl mx-auto relative" style={{ minHeight: `${steps.length * 50}vh` }}>
           {steps.map((step, index) => (
-            <div key={index} className="relative">
-              {/* Connecting Line */}
-              {index < steps.length - 1 && (
-                <div className="hidden md:block absolute left-[52px] top-[120px] w-0.5 h-32 bg-gradient-to-b from-purple-600/50 to-transparent"></div>
-              )}
+            <div
+              key={index}
+              ref={(el) => {
+                if (el) cardsRef.current[index] = el;
+              }}
+              className="sticky mb-8"
+              style={{
+                top: `${140 + (index * 8)}px`,
+                transformOrigin: 'center top',
+              }}
+            >
+              <div className={`${themeClasses.cardBg} ${themeClasses.cardBorder} border-2 backdrop-blur-xl rounded-3xl p-8 md:p-12 shadow-2xl`}>
+                {/* Step Number Badge */}
+                <div className={`inline-flex items-center justify-center w-16 h-16 ${themeClasses.gradient} rounded-2xl mb-6 ${themeClasses.shadowPurple}`}>
+                  <span className={`text-2xl font-bold ${themeClasses.textWhite}`}>{step.number}</span>
+                </div>
 
-              <div className="flex flex-col md:flex-row gap-6 mb-12 group">
-                {/* Icon & Number */}
-                <div className="flex-shrink-0">
-                  <div className="relative">
-                    <div className="w-24 h-24 theme-gradient rounded-2xl flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-purple-900/20">
-                      {step.icon}
-                    </div>
-                    <div className="absolute -top-2 -right-2 w-10 h-10 bg-white text-purple-600 rounded-full flex items-center justify-center font-bold text-sm shadow-lg">
-                      {step.number}
-                    </div>
-                  </div>
+                {/* Icon */}
+                <div className={`mb-6 ${themeClasses.textPrimary}`}>
+                  {step.icon}
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 theme-card bg-[#151825]/50 backdrop-blur-sm p-8 group-hover:bg-[#1a1d2d]">
-                  <h3 className="text-2xl font-bold text-white mb-3">
-                    {step.title}
-                  </h3>
-                  <p className="text-gray-400 leading-relaxed text-lg">
-                    {step.description}
-                  </p>
-                </div>
+                <h3 className={`text-3xl md:text-4xl font-bold ${themeClasses.textPrimary} mb-4`}>
+                  {step.title}
+                </h3>
+                <p className={`${themeClasses.textSecondary} text-lg md:text-xl leading-relaxed`}>
+                  {step.description}
+                </p>
               </div>
             </div>
           ))}
@@ -111,8 +157,8 @@ export default function HowItWorks() {
         {/* CTA */}
         <div className="text-center mt-12">
           <a
-            href="#book-call"
-            className="theme-button inline-flex items-center"
+            href="/contact"
+            className={`${themeClasses.buttonPrimary} px-8 py-4 rounded-full font-semibold inline-flex items-center hover:scale-105 transition-all duration-300`}
           >
             Start Your Project Today
             <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

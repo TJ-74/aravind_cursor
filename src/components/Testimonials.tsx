@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useTheme } from './ThemeProvider';
 
 export default function Testimonials() {
+  const { themeClasses } = useTheme();
   const [activeTestimonial, setActiveTestimonial] = useState(0);
 
   const testimonials = [
@@ -41,29 +43,24 @@ export default function Testimonials() {
   ];
 
   return (
-    <section id="testimonials" className="theme-section relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 bg-[#0f1119] pointer-events-none">
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-0 left-0 w-96 h-96 bg-purple-600/10 rounded-full filter blur-3xl"></div>
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full filter blur-3xl"></div>
-        </div>
-      </div>
+    <section id="testimonials" className={`py-20 relative overflow-hidden ${themeClasses.bgPrimary}`}>
+      {/* Background Gradient */}
+      <div className={`absolute inset-0 ${themeClasses.bgGradient} pointer-events-none`}></div>
 
       <div className="container mx-auto px-6 relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <h2 className={`text-4xl md:text-5xl font-bold ${themeClasses.textPrimary} mb-4`}>
             What Our Clients Say
           </h2>
-          <p className="text-xl text-gray-400">
+          <p className={`text-xl ${themeClasses.textSecondary}`}>
             Don't just take our word for it - hear from our satisfied clients
           </p>
         </div>
 
         {/* Main Testimonial */}
         <div className="max-w-4xl mx-auto mb-12">
-          <div className="theme-card bg-[#151825]/50 backdrop-blur-sm rounded-3xl p-8 md:p-12">
+          <div className={`${themeClasses.cardBg} ${themeClasses.cardBorder} border backdrop-blur-sm rounded-3xl p-8 md:p-12`}>
             <div className="flex flex-col md:flex-row items-center gap-8">
               {/* Client Image */}
               <div className="flex-shrink-0">
